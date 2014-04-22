@@ -1,0 +1,36 @@
+\contentsline {section}{\numberline {1}Overview}{4}{section.1}
+\contentsline {subsection}{\numberline {1.1}Course Overview}{4}{subsection.1.1}
+\contentsline {subsection}{\numberline {1.2}Danaus Overview}{4}{subsection.1.2}
+\contentsline {section}{\numberline {2}Simulation Basics}{4}{section.2}
+\contentsline {subsection}{\numberline {2.1}Parks, Maps, and Tiles}{4}{subsection.2.1}
+\contentsline {subsection}{\numberline {2.2}Butterflies}{5}{subsection.2.2}
+\contentsline {subsection}{\numberline {2.3}Power}{5}{subsection.2.3}
+\contentsline {subsection}{\numberline {2.4}Direction}{5}{subsection.2.4}
+\contentsline {subsection}{\numberline {2.5}Speed}{6}{subsection.2.5}
+\contentsline {section}{\numberline {3}Maps}{6}{section.3}
+\contentsline {subsection}{\numberline {3.1}Tile Types}{6}{subsection.3.1}
+\contentsline {subsubsection}{\numberline {3.1.1}Land}{6}{subsubsection.3.1.1}
+\contentsline {subsubsection}{\numberline {3.1.2}Forest}{6}{subsubsection.3.1.2}
+\contentsline {subsubsection}{\numberline {3.1.3}Cliff}{6}{subsubsection.3.1.3}
+\contentsline {subsubsection}{\numberline {3.1.4}Water}{6}{subsubsection.3.1.4}
+\contentsline {subsection}{\numberline {3.2}Connectivity}{6}{subsection.3.2}
+\contentsline {subsection}{\numberline {3.3}Tile State}{7}{subsection.3.3}
+\contentsline {subsubsection}{\numberline {3.3.1}Location}{7}{subsubsection.3.3.1}
+\contentsline {subsubsection}{\numberline {3.3.2}Light}{7}{subsubsection.3.3.2}
+\contentsline {subsubsection}{\numberline {3.3.3}Wind}{7}{subsubsection.3.3.3}
+\contentsline {subsubsection}{\numberline {3.3.4}Flowers}{8}{subsubsection.3.3.4}
+\contentsline {paragraph}{Flower Invariants}{8}{section*.13}
+\contentsline {subsubsection}{\numberline {3.3.5}Aromas}{9}{subsubsection.3.3.5}
+\contentsline {section}{\numberline {4}Butterfly API}{9}{section.4}
+\contentsline {subsection}{\numberline {4.1}void fly(Direction heading, Speed s)}{9}{subsection.4.1}
+\contentsline {subsection}{\numberline {4.2}void land()}{9}{subsection.4.2}
+\contentsline {subsection}{\numberline {4.3}boolean collect(Flower f)}{9}{subsection.4.3}
+\contentsline {subsection}{\numberline {4.4}void refreshState()}{10}{subsection.4.4}
+\contentsline {subsection}{\numberline {4.5}Power getPower()}{10}{subsection.4.5}
+\contentsline {subsection}{\numberline {4.6}int getMapWidth()}{10}{subsection.4.6}
+\contentsline {subsection}{\numberline {4.7}int getMapHeight()}{10}{subsection.4.7}
+\contentsline {section}{\numberline {5}Learning and Running}{10}{section.5}
+\contentsline {subsection}{\numberline {5.1}Learning}{10}{subsection.5.1}
+\contentsline {subsection}{\numberline {5.2}Running}{11}{subsection.5.2}
+\contentsline {section}{\numberline {6}Command Line Options}{11}{section.6}
+\contentsline {section}{\numberline {7}Credits}{12}{section.7}

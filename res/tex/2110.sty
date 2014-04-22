@@ -1,0 +1,31 @@
+\ProvidesPackage{2110}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Package Imports %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\RequirePackage{java}
+\RequirePackage[hidelinks]{hyperref}
+\RequirePackage{enumerate}
+\RequirePackage{soul}
+\RequirePackage{relsize}
+\RequirePackage{mdframed}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%% For Typesetting Text %%%%%%%%%%%%%%%%%%%%%%%%%%%
+\definecolor{BackgroundGreen}{HTML}{E6F0F0}
+\definecolor{NoteBackground}{HTML}{FFFCE3}
+
+\newcommand\link[2]{\href{#1}{{\color{blue}\underline{\smash{#2}}}}}
+
+\renewcommand\emph[1]{{\bf\color{BlueViolet}#1}}
+
+\newcommand\filename[1]{{\smaller\tt#1}}
+
+\newenvironment{note}[1]{%
+  \vspace{0.5em}
+  \begin{addmargin}[4em]{4em}
+    \begin{mdframed}[backgroundcolor=NoteBackground]
+      \textbf{#1: }
+}{%
+  \end{mdframed}
+  \end{addmargin}
+  \vspace{0.5em}
+}

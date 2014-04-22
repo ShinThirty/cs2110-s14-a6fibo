@@ -1,0 +1,27 @@
+<!-- Danaus maps are begun with the keyword map. Be careful when filling out
+     the entries of a map. Danaus won't check if you've done something wrong.
+     For example, setting a minimum value higher than the maximum value will
+     crash Danaus. -->
+<map>
+    <!-- Tile skins. The tile skin affects the appearance of tiles in a Danaus
+         GUI. The available skins are land and snow. -->
+    <skin>snow</skin>
+    <flowers>
+        <!-- `no` if flowers should be generated according this file. If
+             anything but `no`, flowers will be randomly generated. -->
+        <random>no</random>
+        <!-- If flowers are randomly generated, the expected number of flowers
+             to appear during learning and running -->
+        <expected_learning>50</expected_learning>
+        <expected_running>10</expected_running>
+    </flowers>
+<!--<tiletype>.<[leave empty]>.[leave empty].<flowers> 
+     There are empty fields because we removed features from Danaus -->
+<!-- B will place the butterfly on the preceding tile. -->
+#B...1-2-3|#####;
+#         |##~##;
+#         |^#~##;
+#         |^#~##;
+#         |^^###;
+#         ######;
+</map>
