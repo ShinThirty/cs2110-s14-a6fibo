@@ -131,6 +131,8 @@ public class Butterfly extends AbstractButterfly {
 					List<Flower> flowers = mapStates[i][j].getFlowers();
 					for (Flower flower : flowers) {
 						if (flowerIds.contains(flower.getFlowerId())) {
+							// Remove the corresponding flowerId from remainingFlowerIds
+							remainingFlowerIds.remove(flower.getFlowerId());
 							
 							// Fly to the tile and collect the flower
 							row = i;
@@ -147,6 +149,7 @@ public class Butterfly extends AbstractButterfly {
 							while (path.size() != 0)
 								fly(path.pop(), Speed.NORMAL);
 							collect(flower);
+							
 							// Fly back to the initial tile
 							row = i;
 							col = j;
@@ -158,6 +161,54 @@ public class Butterfly extends AbstractButterfly {
 						}
 					}
 				}
+		
+		// For the new flowers, use their aroma to find and collect them
+		for (Long newFlowerId : remainingFlowerIds) {
+			// Get aromas on current tile
+			List<Aroma> aromas = mapStates[location.row][location.col].getAromas();
+			
+			// Search for the aroma of the flower whose id is newFlowerId
+			for (Aroma aroma : aromas) {
+				if (aroma.getFlowerId() == newFlowerId) {
+					// Search and collect the flower
+					double maxAromaIntensity = aroma.intensity;
+					Direction nextDir = null;
+					
+					for (Direction dir : Direction.values()) {
+						int nextRow = (location.row + dir.dRow + nRows) % nRows;
+						int nextCol = (location.col + dir.dCol + nCols) % nCols;
+						if (mapStates[nextRow][nextCol] != null && !mapStates[nextRow][nextCol].equals(TileState.nil)) {
+							List<Aroma> nextAromas = mapStates[nextRow][nextCol].getAromas();
+							for (Aroma nextAroma : nextAromas) {
+								if (nextAroma.getFlowerId() == newFlowerId) {
+									if (nextAroma.intensity > maxAromaIntensity) {
+										maxAromaIntensity = nextAroma.intensity;
+										nextDir = dir;
+									}
+									break;
+								}
+							}
+						}
+					}
+					
+					// The butterfly reaches the tile
+					if (nextDir == null) {
+						List<Flower> flowers = mapStates[location.row][location.col].getFlowers();
+						for (Flower flower : flowers) {
+							if (flower.getFlowerId() == newFlowerId) {
+								collect(flower);
+								break;
+							}
+						}
+						break;
+					}
+					
+					// The butterfly needs to fly
+					fly(nextDir, Speed.NORMAL);
+					aromas = mapStates[location.row][location.col].getAromas();
+				}
+			}
+		}
 	}
 	
 	/** A class contains the information of the row, col and distance from the 
