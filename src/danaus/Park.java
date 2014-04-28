@@ -151,6 +151,9 @@ public class Park {
 			}
 		}
 		
+		System.out.println(points);
+		System.out.println(actualHeight * actualWidth);
+		
 		return points / (double) (actualHeight * actualWidth) * 100;
 	}
 	
