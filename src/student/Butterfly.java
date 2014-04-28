@@ -106,19 +106,13 @@ public class Butterfly extends AbstractButterfly {
 		int nRows = getMapHeight();
 		int nCols = getMapWidth();
 		Direction[][] backPointers = new Direction[nRows][nCols];
+		Direction backPointer;
 		
 		// Get the initial location
 		refreshState();
 		
 		// Invoke the shortest-path algorithm to calculate the shortest-paths
 		Dijkstra(backPointers, location);
-		
-		/*for (int i = 0; i < nRows; i++) {
-			for (int j = 0; j < nCols; j++)
-				System.out.print(backPointers[i][j] + " ");
-			System.out.println();
-		}*/
-			
 		
 		// The remaining flowerId
 		List<Long> remainingFlowerIds = new ArrayList<Long>(flowerIds);
@@ -137,14 +131,19 @@ public class Butterfly extends AbstractButterfly {
 					List<Flower> flowers = mapStates[i][j].getFlowers();
 					for (Flower flower : flowers) {
 						if (flowerIds.contains(flower.getFlowerId())) {
+							
 							// Fly to the tile and collect the flower
 							row = i;
 							col = j;
-							while (backPointers[row][col] != null) {
-								path.push(Direction.opposite(backPointers[row][col]));
-								row = (row + backPointers[i][j].dRow + nRows) % nRows;
-								col = (col + backPointers[i][j].dCol + nCols) % nCols;
+							backPointer = backPointers[row][col];
+							
+							while (backPointer != null) {
+								path.push(Direction.opposite(backPointer));
+								row = (row + backPointer.dRow + nRows) % nRows;
+								col = (col + backPointer.dCol + nCols) % nCols;
+								backPointer = backPointers[row][col];
 							}
+							
 							while (path.size() != 0)
 								fly(path.pop(), Speed.NORMAL);
 							collect(flower);
@@ -214,10 +213,6 @@ public class Butterfly extends AbstractButterfly {
 					else
 						Q.add(new Distance(i, j, Integer.MAX_VALUE));
 		
-		/*for (Distance d : Q) {
-			System.out.println(d.toString());
-		}*/
-		
 		// The location of the tile with the smallest distance and its adjacent tiles
 		Distance curLoc;
 		int nextRow = 0;
@@ -231,10 +226,6 @@ public class Butterfly extends AbstractButterfly {
 			// Find the location of the tile with the smallest distance
 			curLoc = Q.poll();
 			
-			for (Distance d : Q) {
-			System.out.println(d.toString());
-		}
-			
 			// The remaining tiles are unreachable
 			if (curLoc.dist == Integer.MAX_VALUE)
 				break;
@@ -243,18 +234,21 @@ public class Butterfly extends AbstractButterfly {
 				// Get the coordinates of adjacent tile v
 				nextRow = (curLoc.row + dir.dRow + nRows) % nRows;
 				nextCol = (curLoc.col + dir.dCol + nCols) % nCols;
+				
 				// If v is flyable, update the shortest distance and its back pointer
 				if (!mapStates[nextRow][nextCol].equals(TileState.nil)) {
 					alt = curLoc.dist + 1;
+					
 					// Find the appropriate tile in Q
 					for (Distance nextLoc : Q) {
-						if (nextLoc.row == nextRow && nextLoc.col == nextCol)
+						if (nextLoc.row == nextRow && nextLoc.col == nextCol) {
 							if (alt < nextLoc.dist) {
 								Q.remove(nextLoc);
 								Q.add(new Distance(nextRow, nextCol, alt));
 								backPointers[nextRow][nextCol] = Direction.opposite(dir);
 							}
-						break;
+							break;
+						}
 					}
 				}
 			}
