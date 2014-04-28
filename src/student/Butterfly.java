@@ -19,8 +19,8 @@ public class Butterfly extends AbstractButterfly {
 		
 		// Get the state of the initial tile
 		refreshState();
-		int curRow = state.location.row;
-		int curCol = state.location.col;
+		int curRow = location.row;
+		int curCol = location.col;
 		mapStates[curRow][curCol] = state;
 		
 		// Depth First Search
@@ -59,8 +59,8 @@ public class Butterfly extends AbstractButterfly {
 			
 			// Get the state of the current tile
 			refreshState();
-			int curRow = state.location.row;
-			int curCol = state.location.col;
+			int curRow = location.row;
+			int curCol = location.col;
 			mapStates[curRow][curCol] = state;
 			
 			// Search the next tile
@@ -77,8 +77,8 @@ public class Butterfly extends AbstractButterfly {
 		catch (ObstacleCollisionException e) {
 			// Butterfly hits a cliff or water, sets the corresponding
 			// TileState to Nil
-			int nextRow = (state.location.row + dir.dRow + nRows) % nRows;
-			int nextCol = (state.location.col + dir.dCol + nCols) % nCols;
+			int nextRow = (location.row + dir.dRow + nRows) % nRows;
+			int nextCol = (location.col + dir.dCol + nCols) % nCols;
 			mapStates[nextRow][nextCol] = TileState.nil;
 			exceptions++;
 		}
