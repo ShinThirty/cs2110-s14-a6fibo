@@ -165,9 +165,8 @@ public class Butterfly extends AbstractButterfly {
 		// For the new flowers, use their aroma to find and collect them
 		for (Long newFlowerId : remainingFlowerIds) {
 			// Get aromas on current tile
-			List<Aroma> aromas = mapStates[location.row][location.col].getAromas();
-			System.out.println(aromas.toString());
-			System.out.println(remainingFlowerIds.toString());
+			refreshState();
+			List<Aroma> aromas = state.getAromas();
 			
 			Direction nextDir = null;
 			
@@ -177,7 +176,6 @@ public class Butterfly extends AbstractButterfly {
 					if (aroma.getFlowerId() == newFlowerId) {
 						// Search and collect the flower
 						double maxAromaIntensity = aroma.intensity;
-						System.out.println(aroma.intensity);
 						
 						nextDir = null;
 						
@@ -185,13 +183,16 @@ public class Butterfly extends AbstractButterfly {
 							int nextRow = (location.row + dir.dRow + nRows) % nRows;
 							int nextCol = (location.col + dir.dCol + nCols) % nCols;
 							if (mapStates[nextRow][nextCol] != null && !mapStates[nextRow][nextCol].equals(TileState.nil)) {
-								List<Aroma> nextAromas = mapStates[nextRow][nextCol].getAromas();
+								fly(dir, Speed.NORMAL);
+								refreshState();
+								List<Aroma> nextAromas = state.getAromas();
 								for (Aroma nextAroma : nextAromas) {
 									if (nextAroma.getFlowerId() == newFlowerId) {
 										if (nextAroma.intensity > maxAromaIntensity) {
 											maxAromaIntensity = nextAroma.intensity;
 											nextDir = dir;
 										}
+										fly(Direction.opposite(dir), Speed.NORMAL);
 										break;
 									}
 								}
@@ -201,7 +202,8 @@ public class Butterfly extends AbstractButterfly {
 						// The butterfly still needs to fly
 						if (nextDir != null) {
 							fly(nextDir, Speed.NORMAL);
-							aromas = mapStates[location.row][location.col].getAromas();
+							refreshState();
+							aromas = state.getAromas();
 							break;
 						}
 					}
@@ -210,7 +212,8 @@ public class Butterfly extends AbstractButterfly {
 			while (nextDir != null);
 			
 			// The butterfly reaches the tile
-			List<Flower> flowers = mapStates[location.row][location.col].getFlowers();
+			refreshState();
+			List<Flower> flowers = state.getFlowers();
 			for (Flower flower : flowers) {
 				if (flower.getFlowerId() == newFlowerId) {
 					collect(flower);
