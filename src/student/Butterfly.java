@@ -1,4 +1,4 @@
-/** TIME SPENT: # hours and # minutes. */ 
+/** TIME SPENT: 20 hours and 46 minutes. */ 
 
 package student;
 import java.util.*;
@@ -231,25 +231,30 @@ public class Butterfly extends AbstractButterfly {
 		private int col; // Column of the tile.
 		private int dist = Integer.MAX_VALUE; // Distance from the initial tile.
 		
+		/** Constructor: an instance with coordinates [row, col] and distance dist */
 		public Distance(int row, int col, int dist) {
 			this.col = col;
 			this.row = row;
 			this.dist = dist;
 		}
 		
+		/** Constructor: an instance with equal to d */
 		public Distance(Distance d) {
 			col = d.col;
 			row = d.row;
 			dist = d.dist;
 		}
 		
+		/** Return a negative integer, zero, or a positive integer depending on
+	     * whether this Distance comes before Distance d. The comparison
+	     * is made only on the dist field. */
 		public @Override int compareTo(Distance d) {
 			return dist - d.dist;
 		}
 		
+		/** Return a string containing the three fields. */
 		public @Override String toString() {
-			String string = row + ", " + col + ", " + dist;
-			return string;
+			return row + ", " + col + ", " + dist;
 		}
 	}
 	
