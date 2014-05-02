@@ -135,58 +135,49 @@ public class Butterfly extends AbstractButterfly {
 			refreshState();
 			List<Aroma> aromas = state.getAromas();
 			
-			Direction nextDir = null;
+			// Get the corresponding aroma
+			Aroma curAroma = null;
+			for (Aroma aroma : aromas)
+				if (aroma.getFlowerId() == newFlowerId)
+					curAroma = aroma;
 			
-			// Search for the aroma of the flower whose id is newFlowerId
-			do {
-				for (Aroma aroma : aromas) {
-					if (aroma.getFlowerId() == newFlowerId) {
-						// Search and collect the flower
-						double maxAromaIntensity = aroma.intensity;
+			// Find the direction in which curAroma has greater intensity
+			Aroma nextAroma = null;
+			boolean arrived = false;
+			while (!arrived) {
+				arrived = true;
+				for (Direction dir : Direction.values()) {
+					int nextRow = Common.mod(location.row + dir.dRow, getMapHeight());
+					int nextCol = Common.mod(location.col + dir.dCol, getMapWidth());
+					if (mapStates[nextRow][nextCol] != null &&
+							!mapStates[nextRow][nextCol].equals(TileState.nil)) {
+						fly(dir, Speed.NORMAL);
+						refreshState();
+						aromas = state.getAromas();
+						for (Aroma aroma : aromas)
+							if (aroma.getFlowerId() == newFlowerId)
+								nextAroma = aroma;
 						
-						nextDir = null;
-						
-						for (Direction dir : Direction.values()) {
-							int nextRow = (location.row + dir.dRow + nRows) % nRows;
-							int nextCol = (location.col + dir.dCol + nCols) % nCols;
-							if (mapStates[nextRow][nextCol] != null && !mapStates[nextRow][nextCol].equals(TileState.nil)) {
-								fly(dir, Speed.NORMAL);
-								refreshState();
-								List<Aroma> nextAromas = state.getAromas();
-								for (Aroma nextAroma : nextAromas) {
-									if (nextAroma.getFlowerId() == newFlowerId) {
-										if (nextAroma.intensity > maxAromaIntensity) {
-											maxAromaIntensity = nextAroma.intensity;
-											nextDir = dir;
-										}
-										fly(Direction.opposite(dir), Speed.NORMAL);
-										break;
-									}
-								}
-							}
-						}
-						
-						// The butterfly still needs to fly
-						if (nextDir != null) {
-							fly(nextDir, Speed.NORMAL);
-							refreshState();
-							aromas = state.getAromas();
+						if (nextAroma.intensity > curAroma.intensity) {
+							// Correct direction and not arrived
+							arrived = false;
+							curAroma = nextAroma;
 							break;
 						}
+						else
+							// Wrong direction
+							fly(Direction.opposite(dir), Speed.NORMAL);
 					}
 				}
 			}
-			while (nextDir != null);
-			
-			// The butterfly reaches the tile
+					
+			// Butterfly arrives at final location, collect the flower
 			refreshState();
-			List<Flower> flowers = state.getFlowers();
-			for (Flower flower : flowers) {
-				if (flower.getFlowerId() == newFlowerId) {
-					collect(flower);
+			for (Flower newFlower : state.getFlowers())
+				if (newFlower.getFlowerId() == newFlowerId) {
+					collect(newFlower);
 					break;
 				}
-			}
 		}
 	}
 	
