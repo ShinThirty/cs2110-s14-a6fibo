@@ -20,12 +20,8 @@ public class Butterfly extends AbstractButterfly {
 	 * butterfly is on.
 	 */
 	public @Override TileState[][] learn() {
-		// Get number of rows and columns of the map
-		int nRows = getMapHeight();
-		int nCols = getMapWidth();
-		
-		// Declare and initialize the TileState[][] result array
-		mapStates = new TileState[nRows][nCols];
+		// Initialize the TileState[][] result array
+		mapStates = new TileState[getMapHeight()][getMapWidth()];
 		
 		// Depth First Search
 		DFS();
@@ -41,20 +37,14 @@ public class Butterfly extends AbstractButterfly {
 	 * location when the method is called.
 	 */
 	private void DFS() {
-		// Get number of rows and columns of the map
-		int nRows = getMapHeight();
-		int nCols = getMapWidth();
-		
 		// Get the state of the current tile
 		refreshState();
-		int curRow = location.row;
-		int curCol = location.col;
-		mapStates[curRow][curCol] = state;
+		mapStates[location.row][location.col] = state;
 
 		// Search from adjacent tiles
 		for (Direction nextDir : Direction.values()) {
-			int nextRow = (curRow + nextDir.dRow + nRows) % nRows;
-			int nextCol = (curCol + nextDir.dCol + nCols) % nCols;
+			int nextRow = Common.mod(location.row + nextDir.dRow, getMapHeight());
+			int nextCol = Common.mod(location.col + nextDir.dCol, getMapWidth());
 			if (mapStates[nextRow][nextCol] == null)
 				try {
 					fly(nextDir, Speed.NORMAL);
@@ -87,9 +77,6 @@ public class Butterfly extends AbstractButterfly {
 		int nCols = getMapWidth();
 		Direction[][] backPointers = new Direction[nRows][nCols];
 		Direction backPointer;
-		
-		// Get the initial location
-		refreshState();
 		
 		// Invoke the shortest-path algorithm to calculate the shortest-paths
 		Dijkstra(backPointers, location);
