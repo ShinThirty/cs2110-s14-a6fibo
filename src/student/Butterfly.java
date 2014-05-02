@@ -27,65 +27,45 @@ public class Butterfly extends AbstractButterfly {
 		// Declare and initialize the TileState[][] result array
 		mapStates = new TileState[nRows][nCols];
 		
-		// Get the state of the initial tile
-		refreshState();
-		int curRow = location.row;
-		int curCol = location.col;
-		mapStates[curRow][curCol] = state;
-		
 		// Depth First Search
-		for (Direction dir : Direction.values()) {
-			int nextRow = (curRow + dir.dRow + nRows) % nRows;
-			int nextCol = (curCol + dir.dCol + nCols) % nCols;
-			if (mapStates[nextRow][nextCol] == null)
-				DFS(dir);
-		}
+		DFS();
 
 		return mapStates;
 	}
 	
 	/** Do the Depth First Search along the Direction dir.
-	 * When search() is called, it will first fly the butterfly along the given
-	 * direction "dir". Then the state of current tile is fetched and stored in
-	 * mapStates array. After that, it will recursively search along the possible
-	 * directions.
+	 * When search() is called, it will first fetch the state of current 
+	 * tile and store it in mapStates[][]. After that, it will recursively 
+	 * search along the possible directions.
 	 * When the method finishes, the butterfly will return to the original 
 	 * location when the method is called.
-	 * 
-	 * @param dir Direction indicates the current forward direction.
 	 */
-	private void DFS(Direction dir) {
+	private void DFS() {
 		// Get number of rows and columns of the map
 		int nRows = getMapHeight();
 		int nCols = getMapWidth();
 		
-		try {
-			// Fly along the current Direction dir
-			fly(dir, Speed.NORMAL);
-			
-			// Get the state of the current tile
-			refreshState();
-			int curRow = location.row;
-			int curCol = location.col;
-			mapStates[curRow][curCol] = state;
-			
-			// Search the next tile
-			for (Direction nextDir : Direction.values()) {
-				int nextRow = (curRow + nextDir.dRow + nRows) % nRows;
-				int nextCol = (curCol + nextDir.dCol + nCols) % nCols;
-				if (mapStates[nextRow][nextCol] == null)
-					DFS(nextDir);
-			}
-			
-			// Fly back
-			fly(Direction.opposite(dir), Speed.NORMAL);
-		}
-		catch (ObstacleCollisionException e) {
-			// Butterfly hits a cliff or water, sets the corresponding
-			// TileState to Nil
-			int nextRow = (location.row + dir.dRow + nRows) % nRows;
-			int nextCol = (location.col + dir.dCol + nCols) % nCols;
-			mapStates[nextRow][nextCol] = TileState.nil;
+		// Get the state of the current tile
+		refreshState();
+		int curRow = location.row;
+		int curCol = location.col;
+		mapStates[curRow][curCol] = state;
+
+		// Search from adjacent tiles
+		for (Direction nextDir : Direction.values()) {
+			int nextRow = (curRow + nextDir.dRow + nRows) % nRows;
+			int nextCol = (curCol + nextDir.dCol + nCols) % nCols;
+			if (mapStates[nextRow][nextCol] == null)
+				try {
+					fly(nextDir, Speed.NORMAL);
+					DFS();
+					fly(Direction.opposite(nextDir), Speed.NORMAL);
+				}
+				catch (ObstacleCollisionException e) {
+					// Butterfly hits a cliff or water, sets the corresponding
+					// TileState to Nil
+					mapStates[nextRow][nextCol] = TileState.nil;
+				}
 		}
 	}
 	
