@@ -169,6 +169,14 @@ public class Butterfly extends AbstractButterfly {
 					Direction dir = Direction.values()[i];
 					int nextRow = Common.mod(location.row + dir.dRow, nRows);
 					int nextCol = Common.mod(location.col + dir.dCol, nCols);
+					
+					// Special Case: Maps with only one row or one column
+					if (nextRow == location.row && nextCol == location.col) {
+						// Current Direction is illegal
+						i = (i + 1) % Direction.values().length;
+						continue;
+					}
+					
 					if (mapStates[nextRow][nextCol] != null &&
 							!mapStates[nextRow][nextCol].equals(TileState.nil)) {
 						fly(dir, Speed.NORMAL);
