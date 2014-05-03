@@ -99,56 +99,8 @@ public class Butterfly extends AbstractButterfly {
 		// Collect old flowers
 		collectOldFlowers(flowersToCollect);
 		
-		// For the new flowers, use their aroma to find and collect them
-		for (Long newFlowerId : newFlowerIds) {
-			// Get aromas on current tile
-			refreshState();
-			List<Aroma> aromas = state.getAromas();
-			
-			// Get the corresponding aroma
-			Aroma curAroma = null;
-			for (Aroma aroma : aromas)
-				if (aroma.getFlowerId() == newFlowerId)
-					curAroma = aroma;
-			
-			// Find the direction in which curAroma has greater intensity
-			Aroma nextAroma = null;
-			boolean arrived = false;
-			while (!arrived) {
-				arrived = true;
-				for (Direction dir : Direction.values()) {
-					int nextRow = Common.mod(location.row + dir.dRow, nRows);
-					int nextCol = Common.mod(location.col + dir.dCol, nCols);
-					if (mapStates[nextRow][nextCol] != null &&
-							!mapStates[nextRow][nextCol].equals(TileState.nil)) {
-						fly(dir, Speed.NORMAL);
-						refreshState();
-						aromas = state.getAromas();
-						for (Aroma aroma : aromas)
-							if (aroma.getFlowerId() == newFlowerId)
-								nextAroma = aroma;
-						
-						if (nextAroma.intensity > curAroma.intensity) {
-							// Correct direction and not arrived
-							arrived = false;
-							curAroma = nextAroma;
-							break;
-						}
-						else
-							// Wrong direction
-							fly(Direction.opposite(dir), Speed.NORMAL);
-					}
-				}
-			}
-					
-			// Butterfly arrives at final location, collect the flower
-			refreshState();
-			for (Flower newFlower : state.getFlowers())
-				if (newFlower.getFlowerId() == newFlowerId) {
-					collect(newFlower);
-					break;
-				}
-		}
+		// Collect new flowers
+		collectNewFlowers(newFlowerIds);
 	}
 	
 	
@@ -182,6 +134,74 @@ public class Butterfly extends AbstractButterfly {
 				fly(path.pop(), Speed.NORMAL);
 			collect(nearFlower);
 			flowersToCollect.remove(nearFlower);
+		}
+	}
+	
+	/** Collect the flowers that bloom after the execution of learn().
+	 * In every turn, the butterfly will fly to the tile with higher 
+	 * intensity of the aroma of the corresponding flower. It will 
+	 * also remember the last direction it made as a prediction for next
+	 * turn.
+	 * 
+	 * @param newFlowerIds Long array containing the Ids of the flowers to
+	 * be collected.
+	 */
+	private void collectNewFlowers(List<Long> newFlowerIds) {
+		// For the new flowers, use their aroma to find and collect them
+		for (Long newFlowerId : newFlowerIds) {
+			// Get aromas on current tile
+			refreshState();
+			List<Aroma> aromas = state.getAromas();
+			
+			// Get the corresponding aroma
+			Aroma curAroma = null;
+			for (Aroma aroma : aromas)
+				if (aroma.getFlowerId() == newFlowerId)
+					curAroma = aroma;
+			
+			// Find the direction in which curAroma has greater intensity
+			Aroma nextAroma = null;
+			boolean arrived = false;
+			int i = 0;
+			while (!arrived) {
+				arrived = true;
+				for (int j = 0; j < Direction.values().length; j++) {
+					Direction dir = Direction.values()[i];
+					int nextRow = Common.mod(location.row + dir.dRow, nRows);
+					int nextCol = Common.mod(location.col + dir.dCol, nCols);
+					if (mapStates[nextRow][nextCol] != null &&
+							!mapStates[nextRow][nextCol].equals(TileState.nil)) {
+						fly(dir, Speed.NORMAL);
+						refreshState();
+						aromas = state.getAromas();
+						for (Aroma aroma : aromas)
+							if (aroma.getFlowerId() == newFlowerId)
+								nextAroma = aroma;
+						
+						if (nextAroma.intensity > curAroma.intensity) {
+							// Correct direction and not arrived
+							arrived = false;
+							curAroma = nextAroma;
+							break;
+						}
+						else {
+							// Wrong direction
+							fly(Direction.opposite(dir), Speed.NORMAL);
+							i = (i + 1) % Direction.values().length;
+						}	
+					}
+					else
+						i = (i + 1) % Direction.values().length;
+				}
+			}
+					
+			// Butterfly arrives at final location, collect the flower
+			refreshState();
+			for (Flower newFlower : state.getFlowers())
+				if (newFlower.getFlowerId() == newFlowerId) {
+					collect(newFlower);
+					break;
+				}
 		}
 	}
 	
@@ -239,7 +259,6 @@ public class Butterfly extends AbstractButterfly {
 	
 	/** The Dijkstra algorithm to calculate the shortest path from each flyable
 	 * tile to the initial tile whose location is location.
-	 * 
 	 */
 	private void Dijkstra() {
 		// Declare the Direction array that stores the back pointers of each 
